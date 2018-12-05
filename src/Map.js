@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
 import Pin from './Pin'
+import CRIMES from './crimes.json'
 const TOKEN = 'pk.eyJ1IjoicnlhbmJyaWxleSIsImEiOiJjamdia2ZvYWdhdnhrMnhtc2w3bTlkcHNvIn0.gNywL0w1uolFQ75lCeMplw'
 const navStyle = {
   position: 'absolute',
@@ -8,6 +9,14 @@ const navStyle = {
   left: 0,
   padding: '10px'
 };
+
+// const CRIMES = [
+//   {"crime":"Jay Walking","longitude":-87.623177, "latitude":41.881832},
+//   {"crime":"Jay Walking","longitude":-87.923177, "latitude":41.281832},
+//   {"crime":"Jay Walking","longitude":-88.123177, "latitude":42.181832},
+//   {"crime":"Jay Walking","longitude":-86.923177, "latitude":41.881832}
+// ]
+
 export default class Map extends Component {
 constructor(props) {
     super(props);
@@ -15,48 +24,39 @@ constructor(props) {
       viewport: {
         latitude: 41.881832,
         longitude: -87.623177,
-        zoom: 12,
+        zoom: 9,
         bearing: 0,
         pitch: 0,
         height: "100vh",
         width: "100vw"
       },
-      popupInfo: {
-                  state:
-                    {
-                      latitude: 42.881832,
-                      longitude: -87.623177
-                    }
-                }
+      popupInfo: null
     };
     this.renderPopup = this.renderPopup.bind(this)
   }
+renderCrime = (crime, index) => {
+  return(
+    <Marker
+      key={index}
+      longitude={crime.longitude}
+      latitude={crime.latitude}>
+      <Pin onClick={() => this.setState({popupInfo: crime})} />
+    </Marker>
+  );
+}
 renderPopup(){
+  console.log(this.state)
     return this.state.popupInfo && (
       <Popup tipSize={5}
         anchor="bottom-right"
-        longitude={this.state.popupInfo.state.longitude}
-        latitude={this.state.popupInfo.state.latitude}
+        longitude={this.state.popupInfo.longitude}
+        latitude={this.state.popupInfo.latitude}
         onClose={() => this.setState({popupInfo: null})}
         closeOnClick={true}>
-        <p>'Some Info'</p>
+        <p>lat: {this.state.popupInfo.latitude}<br/>lon: {this.state.popupInfo.longitude}</p>
       </Popup>
-    )
+    );
   }
-// handlePinClick(lat, lon){
-//   this.setState(
-//     {
-//       popupInfo: 
-//         {
-//           state:
-//             {
-//               latitude: 42.881832,
-//               longitude: -87.623177
-//             }
-//         }
-//     })
-//     this.renderPopup()
-// }
 render() {
     const {viewport} = this.state;
     // this.setState({})
@@ -66,21 +66,12 @@ render() {
         mapStyle="mapbox://styles/mapbox/dark-v9"
         mapboxApiAccessToken={TOKEN} 
         onViewportChange={(viewport) => this.setState({viewport})}>
-        {/* {markers} */}
+        {CRIMES.map(this.renderCrime)}
         {this.renderPopup()}
         
         <div className="nav" style={navStyle}>
         <NavigationControl onViewportChange={(viewport) => this.setState({viewport})} />
         </div>
-          <Marker longitude={-87.623177} latitude={41.881832}>
-            <Pin onClick={console.log("CLICKED") && this.renderPopup()}/>
-          </Marker>
-          
-          <Marker longitude={-86.623177} latitude={42.881832}>
-            <Pin onClick={() => this.renderPopup()}/>
-          </Marker>
-          
-      
       </MapGL>
   
     );
