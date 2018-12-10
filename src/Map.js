@@ -60,6 +60,7 @@ constructor(props) {
     return result; //JavaScript object
     // return JSON.stringify(result); //JSON
   }
+  _onViewportChange = (viewport) => this.setState({viewport})
 renderCrime = (crime, index) => {
   return(
     <Marker
@@ -104,9 +105,9 @@ render() {
         {!!this.state.CRIMES && this.state.CRIMES.map(this.renderCrime)}
       
         {this.renderPopup()}
-        <ControlPanel />
+        <ControlPanel lat={this.state.viewport.latitude} lon={this.state.viewport.longitude}/>
         <div className="nav" style={navStyle}>
-        <NavigationControl onViewportChange={(viewport) => this.setState({viewport})} />
+        <NavigationControl onViewportChange={this._onViewportChange} />
         
         </div>
       </MapGL>

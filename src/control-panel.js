@@ -16,7 +16,6 @@ export default class ControlPanel extends Component {
         this.handleDomesticChange = this.handleDomesticChange.bind(this)
       }
       handleLocationChange(event) {
-          console.log("EVENT: ", event)
           this.setState({locationValue:event.target.value})
       }
       handleArrestChange(event) {
@@ -28,6 +27,7 @@ export default class ControlPanel extends Component {
       renderOption = (option, index) => {
         return(
           <option
+            key={index}
             value={option}>
             {option}
             </option>
@@ -35,13 +35,12 @@ export default class ControlPanel extends Component {
       }
   render() {
     const Container = this.props.containerComponent || defaultContainer;
-    console.log("this.state.locationValue: ", this.state.locationValue)
     return (
       <Container>
         <h3>PREDICT THE CRIME COMMITTED</h3>
         <p>Select Options</p>
-        Latitude:<input type="text"/><br />
-        Longitude: <input type="text"/><br />
+        Latitude:<input type="text" value={this.props.lat}/><br />
+        Longitude: <input type="text" value={this.props.lon}/><br />
         <label>
         Location Description:
         <select value={this.state.locationValue} onChange={this.handleLocationChange}>
