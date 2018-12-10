@@ -94,6 +94,7 @@ renderPopup(){
   }
   renderPrediction(){
     return this.state.prediction && (
+      <div className="prediction">
       <Popup tipSize={5}
         anchor="bottom-right"
         longitude={this.state.prediction.lon} 
@@ -102,6 +103,7 @@ renderPopup(){
         closeOnClick={true}>
         <p>Crime Predicted: {this.state.prediction.predicted_label} </p>
       </Popup>
+      </div>
     );
   }
   _makePrediction = (_prediction) => {
