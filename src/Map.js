@@ -30,6 +30,7 @@ constructor(props) {
     };
     // this.CRIMES = this.props.CRIMES
     this.renderPopup = this.renderPopup.bind(this)
+    this._onViewportChange = this._onViewportChange.bind(this)
   }
   componentDidMount(){
     axios.get('https://s3.amazonaws.com/crimes-in-chicago/Chicago_Crimes_2012_to_2017_condensed.csv')
@@ -105,7 +106,7 @@ render() {
         {!!this.state.CRIMES && this.state.CRIMES.map(this.renderCrime)}
       
         {this.renderPopup()}
-        <ControlPanel lat={this.state.viewport.latitude} lon={this.state.viewport.longitude}/>
+        <ControlPanel lat={this.state.viewport.latitude} lon={this.state.viewport.longitude} onViewportChange={this._onViewportChange}/>
         <div className="nav" style={navStyle}>
         <NavigationControl onViewportChange={this._onViewportChange} />
         

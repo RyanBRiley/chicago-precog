@@ -10,7 +10,8 @@ export default class Pin extends Component {
                     src={require("./images/cuffs.png")}
                     height={size}
                     width={size} 
-                    onClick={onClick}/>
+                    onClick={onClick}
+                    alt={'X'}/>
             </div>
         );
     }
