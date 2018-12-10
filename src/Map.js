@@ -107,6 +107,9 @@ renderPopup(){
     );
   }
   _makePrediction = (_prediction) => {
+    console.log("PREDICTION: ", _prediction)
+    _prediction['lon'] = this.state.viewport.longitude
+    _prediction['lat'] = this.state.viewport.latitude
     this.setState({prediction: _prediction})
   }
 render() {

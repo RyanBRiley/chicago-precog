@@ -150,9 +150,9 @@ export default class ControlPanel extends Component {
         this.state = {
           lat: this.props.lat,
           lon: this.props.lon,
-          locationValue: '0',
-          arrestValue: 'True',
-          domesticValue: 'True',
+          locationValue: 'APARTMENT',
+          arrestValue: '0',
+          domesticValue: '0',
           yearValue: '2017',
           prediction: null
         };
@@ -185,8 +185,9 @@ export default class ControlPanel extends Component {
       handlePredict(event) {
           dummyPrediction['lat'] = this.props.lat
           dummyPrediction['lon'] = this.props.lon
-        this.props.makePrediction(dummyPrediction)
-          const req = {"data": `${this.state.locationValue}, ` +
+        
+          console.log('this.state.locationValue: ', this.state.locationValue)
+          const req = {"data": `${locationValues[this.state.locationValue]}, ` +
                                `${this.state.arrestValue}, ` +
                                `${this.state.domesticValue}, ` +
                                `${this.state.yearValue}, ` +
@@ -194,15 +195,20 @@ export default class ControlPanel extends Component {
                                `${this.props.lon}`
                         }
           console.log(req)
-        axios.post('https://sv2umqastl.execute-api.us-west-2.amazonaws.com/test/crimepredict', 
+        const request = axios.post('https://sv2umqastl.execute-api.us-west-2.amazonaws.com/test/crimepredict', 
         req)
           .then(function (response) {
-            console.log(response);
-          })
+            console.log("RESPONSE: ", response);
+            console.log("typeof RESPONSE.data: ", typeof(response.data));
+            console.log("RESPONSE.data: ", response.data);
+            this.props.makePrediction(response.data)
+        //   })
+          }.bind(this))
           .catch(function (error) {
             
             console.log(error);
           });
+        //   console.log("REQUEST: ", request)
       }
       renderOption = (option, index) => {
         return(
@@ -232,16 +238,16 @@ export default class ControlPanel extends Component {
             radio
             label='Yes'
             name='checkboxRadioGroup'
-            value='True'
-            checked={this.state.arrestValue === 'True'}
+            value='0'
+            checked={this.state.arrestValue === '0'}
             onChange={this.handleArrestChange}
           />
          <Checkbox
             radio
             label='No'
             name='checkboxRadioGroup'
-            value='False'
-            checked={this.state.arrestValue === 'False'}
+            value='1'
+            checked={this.state.arrestValue === '1'}
             onChange={this.handleArrestChange}
           />
           Domestic Dispute: <br/>
@@ -249,16 +255,16 @@ export default class ControlPanel extends Component {
             radio
             label='Yes'
             name='checkboxRadioGroup'
-            value='True'
-            checked={this.state.domesticValue === 'True'}
+            value='0'
+            checked={this.state.domesticValue === '0'}
             onChange={this.handleDomesticChange}
           />
          <Checkbox
             radio
             label='No'
             name='checkboxRadioGroup'
-            value='False'
-            checked={this.state.domesticValue === 'False'}
+            value='1'
+            checked={this.state.domesticValue === '1'}
             onChange={this.handleDomesticChange}
           />
         <button onClick={this.handlePredict}>
