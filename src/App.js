@@ -8,7 +8,7 @@ class App extends Component {
     console.log(this.props.CRIMES)
     return (
       <div className="App">
-        <Map CRIMES={this.props.CRIMES}/>
+        <Map />
       </div>
     );
   }

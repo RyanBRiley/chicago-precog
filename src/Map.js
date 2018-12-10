@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
 import Pin from './Pin'
+import axios from 'axios'
 // import CRIMES from './crimes.json'
 const TOKEN = 'pk.eyJ1IjoicnlhbmJyaWxleSIsImEiOiJjamdia2ZvYWdhdnhrMnhtc2w3bTlkcHNvIn0.gNywL0w1uolFQ75lCeMplw'
 const navStyle = {
@@ -15,7 +16,7 @@ const navStyle = {
 //   {"crime":"Jay Walking","longitude":-87.923177, "latitude":41.281832},
 //   {"crime":"Jay Walking","longitude":-88.123177, "latitude":42.181832},
 //   {"crime":"Jay Walking","longitude":-86.923177, "latitude":41.881832}
-// ]
+// ] 
 
 export default class Map extends Component {
 constructor(props) {
@@ -30,10 +31,43 @@ constructor(props) {
         height: "100vh",
         width: "100vw"
       },
+      CRIMES: null,
       popupInfo: null
     };
     // this.CRIMES = this.props.CRIMES
     this.renderPopup = this.renderPopup.bind(this)
+  }
+  componentDidMount(){
+    axios.get('https://s3.amazonaws.com/crimes-in-chicago/Chicago_Crimes_2012_to_2017_condensed.csv')
+    .then(res => {  this.setState({CRIMES: this.csvJSON(res.data)})
+    })
+  }
+  csvJSON(csv){
+    var lines=csv.split("\n");
+  
+    var result = [];
+  
+    var headers=lines[0].split(",");
+  
+    for(var i=1;i<1000;i++){
+  
+        var obj = {};
+        var currentline=lines[i].split(",");
+       
+        for(var j=0;j<headers.length;j++){
+            obj[headers[j]] = currentline[j];
+        }
+        if (Number(obj.Latitude) > 40 && 
+            Number(obj.Latitude) < 42 &&
+            Number(obj.Longitude) > -89 && 
+            Number(obj.Longitude) < -86) {
+                result.push(obj);
+        }
+  
+    }
+    
+    return result; //JavaScript object
+    // return JSON.stringify(result); //JSON
   }
 renderCrime = (crime, index) => {
   return(
@@ -73,7 +107,11 @@ render() {
         mapboxApiAccessToken={TOKEN} 
         onViewportChange={(viewport) => this.setState({viewport})}>
         {/* {this.renderCrime(this.props.CRIMES[0], 1)} */}
-        {this.props.CRIMES.map(this.renderCrime)}
+        {/* if (!!this.state.CRIMES) {
+          console.log("this.state.CRIMES: ", !!this.state.CRIMES)
+        } */}
+        {!!this.state.CRIMES && this.state.CRIMES.map(this.renderCrime)}
+      
         {this.renderPopup()}
         
         <div className="nav" style={navStyle}>
