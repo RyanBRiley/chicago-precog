@@ -55,7 +55,9 @@ renderPopup(){
         latitude={this.state.popupInfo.Latitude}
         onClose={() => this.setState({popupInfo: null})}
         closeOnClick={true}>
-        <p>crime: {this.state.popupInfo['Primary Type']} {this.state.popupInfo.Description} <br/> lat: {this.state.popupInfo.Latitude}<br/>lon: {this.state.popupInfo.Longitude}</p>
+        <p>Crime: {this.state.popupInfo['Primary Type']} <br /> Description: {this.state.popupInfo.Description} 
+        <br/>Location Description: {this.state.popupInfo['Location Description']}
+        <br/>Date: {this.state.popupInfo['Updated On']}</p>
       </Popup>
     );
   }
