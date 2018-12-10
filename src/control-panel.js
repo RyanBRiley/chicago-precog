@@ -9,7 +9,10 @@ export default class ControlPanel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          locationValue: 'Location Description'
+          locationValue: 'Location Description',
+          arrestValue: 'True',
+          domesticValue: 'True',
+          yearValue: '2017'
         };
         this.handleLocationChange = this.handleLocationChange.bind(this)
         this.handleArrestChange = this.handleArrestChange.bind(this)
@@ -23,6 +26,9 @@ export default class ControlPanel extends Component {
       }
       handleDomesticChange(event) {
         this.setState({domesticValue:event.target.value})
+      }
+      handlePredict(event) {
+          console.log("MAKE A PREDICTION")
       }
       renderOption = (option, index) => {
         return(
@@ -80,7 +86,9 @@ export default class ControlPanel extends Component {
             checked={this.state.domesticValue === 'False'}
             onChange={this.handleDomesticChange}
           />
-        <input type="submit" value="Predict"/>
+        <button onClick={this.handlePredict}>
+            PREDICT
+            </button>
     
         <hr />
 
