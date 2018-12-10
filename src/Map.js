@@ -26,11 +26,14 @@ constructor(props) {
         width: "100vw"
       },
       CRIMES: null,
-      popupInfo: null
+      popupInfo: null,
+      prediction: null
     };
     // this.CRIMES = this.props.CRIMES
     this.renderPopup = this.renderPopup.bind(this)
+    this.renderPrediction = this.renderPrediction.bind(this)
     this._onViewportChange = this._onViewportChange.bind(this)
+    this._makePrediction = this._makePrediction.bind(this)
   }
   componentDidMount(){
     axios.get('https://s3.amazonaws.com/crimes-in-chicago/Chicago_Crimes_2012_to_2017_condensed.csv')
@@ -82,11 +85,27 @@ renderPopup(){
         latitude={this.state.popupInfo.Latitude}
         onClose={() => this.setState({popupInfo: null})}
         closeOnClick={true}>
-        <p>Crime: {this.state.popupInfo['Primary Type']} <br /> Description: {this.state.popupInfo.Description} 
+        <p>Crime: {this.state.popupInfo['Primary Type']} 
+        <br /> Description: {this.state.popupInfo.Description} 
         <br/>Location Description: {this.state.popupInfo['Location Description']}
         <br/>Date: {this.state.popupInfo['Updated On']}</p>
       </Popup>
     );
+  }
+  renderPrediction(){
+    return this.state.prediction && (
+      <Popup tipSize={5}
+        anchor="bottom-right"
+        longitude={this.state.prediction.lon} 
+        latitude={this.state.prediction.lat} 
+        onClose={() => this.setState({prediction: null})}
+        closeOnClick={true}>
+        <p>Crime Predicted: {this.state.prediction.predicted_label} </p>
+      </Popup>
+    );
+  }
+  _makePrediction = (_prediction) => {
+    this.setState({prediction: _prediction})
   }
 render() {
     const {viewport} = this.state;
@@ -106,7 +125,12 @@ render() {
         {!!this.state.CRIMES && this.state.CRIMES.map(this.renderCrime)}
       
         {this.renderPopup()}
-        <ControlPanel lat={this.state.viewport.latitude} lon={this.state.viewport.longitude} onViewportChange={this._onViewportChange}/>
+        {this.renderPrediction()}
+        <ControlPanel 
+          lat={this.state.viewport.latitude} 
+          lon={this.state.viewport.longitude} 
+          onViewportChange={this._onViewportChange}
+          makePrediction={this._makePrediction}/>
         <div className="nav" style={navStyle}>
         <NavigationControl onViewportChange={this._onViewportChange} />
         

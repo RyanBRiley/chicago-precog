@@ -162,7 +162,7 @@ export default class ControlPanel extends Component {
         this.handleArrestChange = this.handleArrestChange.bind(this)
         this.handleDomesticChange = this.handleDomesticChange.bind(this)
         this.handlePredict = this.handlePredict.bind(this)
-        this.renderPrediction = this.renderPrediction.bind(this)
+        // this.renderPrediction = this.renderPrediction.bind(this)
       }
       handleLatChange(event) {
         this.setState({lat:event.target.value})
@@ -183,6 +183,9 @@ export default class ControlPanel extends Component {
 
       }
       handlePredict(event) {
+          dummyPrediction['lat'] = this.props.lat
+          dummyPrediction['lon'] = this.props.lon
+        this.props.makePrediction(dummyPrediction)
           const req = {"data": `${this.state.locationValue}, ` +
                                `${this.state.arrestValue}, ` +
                                `${this.state.domesticValue}, ` +
@@ -197,7 +200,7 @@ export default class ControlPanel extends Component {
             console.log(response);
           })
           .catch(function (error) {
-            this.setState({prediction: dummyPrediction})
+            
             console.log(error);
           });
       }
@@ -210,22 +213,10 @@ export default class ControlPanel extends Component {
             </option>
         );
       }
-      renderPrediction(){
-          return this.state.prediction && (
-            <Popup tipSize={5}
-              anchor="bottom-right"
-              longitude={this.props.lon}
-              latitude={this.props.lat}
-              onClose={() => this.setState({prediction: null})}
-              closeOnClick={true}>
-              <p>Crime Predicted: {this.state.prediction.predicted_label} </p>
-            </Popup>
-          );
-        }
+
   render() {
     const Container = this.props.containerComponent || defaultContainer;
     return (
-      {this.renderPrediction()}
       <Container>
         <h3>PREDICT THE CRIME COMMITTED</h3>
         <p>Select Options</p>
