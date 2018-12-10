@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
 import Pin from './Pin'
-import CRIMES from './crimes.json'
+// import CRIMES from './crimes.json'
 const TOKEN = 'pk.eyJ1IjoicnlhbmJyaWxleSIsImEiOiJjamdia2ZvYWdhdnhrMnhtc2w3bTlkcHNvIn0.gNywL0w1uolFQ75lCeMplw'
 const navStyle = {
   position: 'absolute',
@@ -32,14 +32,16 @@ constructor(props) {
       },
       popupInfo: null
     };
+    // this.CRIMES = this.props.CRIMES
     this.renderPopup = this.renderPopup.bind(this)
   }
 renderCrime = (crime, index) => {
   return(
     <Marker
       key={index}
-      longitude={crime.longitude}
-      latitude={crime.latitude}>
+      
+      longitude={Number(crime.Longitude)}
+      latitude={Number(crime.Latitude)}>
       <Pin onClick={() => this.setState({popupInfo: crime})} />
     </Marker>
   );
@@ -49,24 +51,27 @@ renderPopup(){
     return this.state.popupInfo && (
       <Popup tipSize={5}
         anchor="bottom-right"
-        longitude={this.state.popupInfo.longitude}
-        latitude={this.state.popupInfo.latitude}
+        longitude={this.state.popupInfo.Longitude}
+        latitude={this.state.popupInfo.Latitude}
         onClose={() => this.setState({popupInfo: null})}
         closeOnClick={true}>
-        <p>lat: {this.state.popupInfo.latitude}<br/>lon: {this.state.popupInfo.longitude}</p>
+        <p>crime: {this.state.popupInfo['Primary Type']} {this.state.popupInfo.Description} <br/> lat: {this.state.popupInfo.Latitude}<br/>lon: {this.state.popupInfo.Longitude}</p>
       </Popup>
     );
   }
 render() {
     const {viewport} = this.state;
+    // console.log(this.props.crimes)
     // this.setState({})
+    
     return (
       <MapGL
         {...viewport}
         mapStyle="mapbox://styles/mapbox/dark-v9"
         mapboxApiAccessToken={TOKEN} 
         onViewportChange={(viewport) => this.setState({viewport})}>
-        {CRIMES.map(this.renderCrime)}
+        {/* {this.renderCrime(this.props.CRIMES[0], 1)} */}
+        {this.props.CRIMES.map(this.renderCrime)}
         {this.renderPopup()}
         
         <div className="nav" style={navStyle}>
