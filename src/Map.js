@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import MapGL, {Marker, Popup, NavigationControl} from 'react-map-gl';
 import Pin from './Pin'
 import axios from 'axios'
+import ControlPanel from './control-panel';
 // import CRIMES from './crimes.json'
 const TOKEN = 'pk.eyJ1IjoicnlhbmJyaWxleSIsImEiOiJjamdia2ZvYWdhdnhrMnhtc2w3bTlkcHNvIn0.gNywL0w1uolFQ75lCeMplw'
 const navStyle = {
@@ -11,13 +12,6 @@ const navStyle = {
   padding: '10px'
 };
 
-// const CRIMES = [
-//   {"crime":"Jay Walking","longitude":-87.623177, "latitude":41.881832},
-//   {"crime":"Jay Walking","longitude":-87.923177, "latitude":41.281832},
-//   {"crime":"Jay Walking","longitude":-88.123177, "latitude":42.181832},
-//   {"crime":"Jay Walking","longitude":-86.923177, "latitude":41.881832}
-// ] 
-
 export default class Map extends Component {
 constructor(props) {
     super(props);
@@ -25,7 +19,7 @@ constructor(props) {
       viewport: {
         latitude: 41.881832,
         longitude: -87.623177,
-        zoom: 9,
+        zoom: 10,
         bearing: 0,
         pitch: 0,
         height: "100vh",
@@ -42,18 +36,15 @@ constructor(props) {
     .then(res => {  this.setState({CRIMES: this.csvJSON(res.data)})
     })
   }
+  //The Following function was sourced from https://gist.github.com/iwek/7154578
+  //Thank you iwek!!!
   csvJSON(csv){
     var lines=csv.split("\n");
-  
     var result = [];
-  
     var headers=lines[0].split(",");
-  
     for(var i=1;i<1000;i++){
-  
         var obj = {};
-        var currentline=lines[i].split(",");
-       
+        var currentline=lines[i].split(",");     
         for(var j=0;j<headers.length;j++){
             obj[headers[j]] = currentline[j];
         }
@@ -113,9 +104,10 @@ render() {
         {!!this.state.CRIMES && this.state.CRIMES.map(this.renderCrime)}
       
         {this.renderPopup()}
-        
+        <ControlPanel />
         <div className="nav" style={navStyle}>
         <NavigationControl onViewportChange={(viewport) => this.setState({viewport})} />
+        
         </div>
       </MapGL>
   
